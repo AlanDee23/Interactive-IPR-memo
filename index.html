@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивная памятка по ИПР</title>
+    <title>Интерактивная памятка и тест по ИПР</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure is based on four distinct thematic cards that correspond to the original memo's sections: 'When to Use', 'System Features', 'Responsibilities', and 'Common Mistakes'. A new section, 'IDP Task Generator', has been added to leverage LLM capabilities. This card-based design was chosen for its clarity and modern feel, allowing users to easily digest information in chunks. Key interactions include a role-selector for responsibilities, a clickable accordion for common mistakes, and a text input with a button for the LLM-powered task generator. This enhances user engagement by transforming passive reading into active exploration and creation, which is more effective for an instructional guide. -->
-    <!-- Visualization & Content Choices: 1. 'When to Use' & 'Features': Goal: Inform. Method: Styled lists with Unicode icons. Justification: Clear and scannable presentation for straightforward information. 2. 'Responsibilities': Goal: Organize & Compare. Method: Interactive role selector (3 buttons updating a text area). Interaction: User clicks a role button to see specific duties. Justification: Allows users to filter information based on their immediate interest, making it easier to compare roles than a static list. Implemented with vanilla JS. 3. 'Common Mistakes': Goal: Engage & Inform. Method: Accordion/clickable list. Interaction: User clicks on a mistake to reveal its explanation. Justification: Reduces initial information overload and encourages active discovery of each point. Implemented with vanilla JS. 4. 'IDP Task Generator': Goal: Create & Assist. Method: Text input, button, and dynamic text output. Interaction: User inputs a goal, clicks a button, and receives LLM-generated tasks. Justification: Directly helps users apply the memo's principles by generating actionable content for their IDPs, enhancing the app's utility. Implemented with vanilla JS and Gemini API. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth; /* Smooth scrolling for navigation */
         }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         .card {
@@ -43,6 +40,75 @@
         .mistake-item.open .icon {
             transform: rotate(45deg);
         }
+        /* Styles for Quiz */
+        .option-button {
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .option-button:hover:not(.correct):not(.incorrect) {
+            background-color: #f0f4f8; /* slate-100 */
+        }
+        .option-button.correct {
+            background-color: #d1fae5; /* green-100 */
+            border-color: #34d399; /* green-400 */
+        }
+        .option-button.incorrect {
+            background-color: #fee2e2; /* red-100 */
+            border-color: #ef4444; /* red-500 */
+        }
+        .option-button.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Mobile menu specific styles */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40; /* Below nav, above content */
+            display: none; /* Hidden by default */
+        }
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%; /* Start off-screen */
+            width: 75%;
+            max-width: 300px;
+            height: 100%;
+            background-color: white;
+            z-index: 50; /* Above overlay */
+            transition: right 0.3s ease-in-out;
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .mobile-menu.open {
+            right: 0; /* Slide in */
+        }
+        .mobile-menu-overlay.open {
+            display: block; /* Show overlay */
+        }
+
+        /* Navigation Highlight Animation */
+        @keyframes pulse-highlight {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            }
+            50% {
+                transform: scale(1.01); /* Slight enlargement */
+                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.15); /* More prominent shadow */
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            }
+        }
+
+        .nav-highlight {
+            animation: pulse-highlight 1.5s ease-out 0.5s 1; /* Run once after 0.5s delay */
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -53,6 +119,52 @@
             <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Интерактивная памятка по ИПР</h1>
             <p class="mt-2 text-lg text-slate-600">Ваш гид по Индивидуальным Планам Развития</p>
         </header>
+
+        <!-- Navigation Bar -->
+        <nav class="bg-blue-600 p-4 rounded-lg mb-8 shadow-md nav-highlight">
+            <div class="flex justify-between items-center">
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="#when-to-use" class="text-white hover:text-blue-200 font-semibold transition">Когда использовать</a>
+                    <a href="#features" class="text-white hover:text-blue-200 font-semibold transition">Функции iSpring Learn</a>
+                    <a href="#roles" class="text-white hover:text-blue-200 font-semibold transition">Кто за что отвечает</a>
+                    <a href="#mistakes" class="text-white hover:text-blue-200 font-semibold transition">Частые ошибки</a>
+                    <a href="#quiz-section" class="text-white hover:text-blue-200 font-semibold transition">Тест</a>
+                </div>
+
+                <!-- Mobile Menu Button (Hamburger) -->
+                <div class="md:hidden flex-grow text-right">
+                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+        <!-- Mobile Menu Sidebar -->
+        <div id="mobile-menu-sidebar" class="mobile-menu">
+            <div class="p-6">
+                <div class="flex justify-end mb-4">
+                    <button id="close-mobile-menu" class="text-slate-600 hover:text-slate-900 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <nav class="flex flex-col space-y-4">
+                    <a href="#when-to-use" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Когда использовать</a>
+                    <a href="#features" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Функции iSpring Learn</a>
+                    <a href="#roles" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Кто за что отвечает</a>
+                    <a href="#mistakes" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Частые ошибки</a>
+                    <a href="#quiz-section" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Тест</a>
+                </nav>
+            </div>
+        </div>
 
         <main class="space-y-8">
             
@@ -127,18 +239,34 @@
                 </div>
             </section>
 
-            <section id="task-generator" class="card p-6">
-                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">✨</span>Генератор задач для ИПР</h2>
-                <p class="mb-5 text-slate-600">Опишите вашу цель развития, и мы сгенерируем список конкретных задач для вашего Индивидуального Плана Развития.</p>
-                <textarea id="goal-input" class="w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" rows="3" placeholder="Например: Улучшить навыки публичных выступлений"></textarea>
-                <button id="generate-tasks-button" class="bg-blue-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-blue-700 transition w-full sm:w-auto">
-                    Сгенерировать задачи ✨
-                </button>
-                <div id="loading-indicator" class="mt-4 text-center text-slate-500 hidden">
-                    Генерирую задачи...
+            <section id="quiz-section" class="card p-6">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">🧠</span>Тест для самопроверки</h2>
+                <p class="mb-5 text-slate-600">Проверьте свои знания по Индивидуальным Планам Развития, ответив на несколько вопросов.</p>
+                
+                <div id="quiz-container">
+                    <div id="question-display" class="mb-6">
+                        <p class="text-xl font-semibold text-slate-800 mb-4" id="question-text"></p>
+                        <div id="options-container" class="space-y-3">
+                            <!-- Options will be loaded here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div id="feedback-display" class="text-center text-lg font-medium mb-6 hidden"></div>
+
+                    <div class="flex justify-between items-center mt-6">
+                        <button id="next-button" class="bg-blue-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-blue-700 transition">
+                            Далее
+                        </button>
+                        <p class="text-slate-600">Вопрос <span id="current-question-number">1</span> из <span id="total-questions"></span></p>
+                    </div>
                 </div>
-                <div id="generated-tasks-output" class="mt-5 p-4 bg-slate-50 rounded-lg border border-slate-200 min-h-[100px]">
-                    <p class="text-slate-500">Здесь появятся сгенерированные задачи.</p>
+
+                <div id="results-container" class="text-center hidden">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Результаты теста</h2>
+                    <p class="text-xl text-slate-700 mb-6">Вы ответили правильно на <span id="score">0</span> из <span id="total-questions-results"></span> вопросов.</p>
+                    <button id="restart-button" class="bg-green-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-green-700 transition">
+                        Начать заново
+                    </button>
                 </div>
             </section>
 
@@ -153,6 +281,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Memo Logic ---
             const rolesData = {
                 employee: {
                     title: 'Сотрудник',
@@ -194,99 +323,203 @@
             });
             
             if(roleButtons.length > 0) {
-                roleButtons[0].click();
+                roleButtons[0].click(); // Initialize role description
             }
 
-            // LLM Integration for Task Generator
-            const goalInput = document.getElementById('goal-input');
-            const generateButton = document.getElementById('generate-tasks-button');
-            const loadingIndicator = document.getElementById('loading-indicator');
-            const outputArea = document.getElementById('generated-tasks-output');
+            // --- Quiz Logic ---
+            const questions = [
+                {
+                    question: "В какой ситуации НЕ рекомендуется использовать ИПР?",
+                    options: [
+                        "Адаптация новых сотрудников",
+                        "Развитие компетенций действующих сотрудников",
+                        "Ежедневное планирование задач",
+                        "Подготовка к повышению"
+                    ],
+                    correctAnswer: "Ежедневное планирование задач"
+                },
+                {
+                    question: "Какую функцию iSpring Learn НЕ предоставляет для ИПР?",
+                    options: [
+                        "Создание планов с нуля",
+                        "Деление плана на этапы",
+                        "Автоматическое выполнение всех задач",
+                        "Отслеживание выполнения плана в дашборде"
+                    ],
+                    correctAnswer: "Автоматическое выполнение всех задач"
+                },
+                {
+                    question: "Кто в процессе ИПР отвечает за утверждение итогового результата всего плана?",
+                    options: [
+                        "Сотрудник",
+                        "Наставник",
+                        "Руководитель",
+                        "HR-менеджер"
+                    ],
+                    correctAnswer: "Руководитель"
+                },
+                {
+                    question: "Какая из перечисленных ошибок является частой при работе с ИПР?",
+                    options: [
+                        "Шаблон опубликован слишком рано",
+                        "В задачах есть конкретное действие",
+                        "Не заданы сроки выполнения задач",
+                        "Назначено слишком много наставников"
+                    ],
+                    correctAnswer: "Не заданы сроки выполнения задач"
+                }
+            ];
 
-            generateButton.addEventListener('click', async () => {
-                const userGoal = goalInput.value.trim();
-                if (!userGoal) {
-                    outputArea.innerHTML = '<p class="text-red-500">Пожалуйста, введите цель развития.</p>';
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let selectedOption = null;
+            let quizActive = true;
+
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const feedbackDisplay = document.getElementById('feedback-display');
+            const nextButton = document.getElementById('next-button');
+            const currentQuestionNumber = document.getElementById('current-question-number');
+            const totalQuestions = document.getElementById('total-questions');
+            const totalQuestionsResults = document.getElementById('total-questions-results');
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('results-container');
+            const scoreDisplay = document.getElementById('score');
+            const restartButton = document.getElementById('restart-button');
+
+            totalQuestions.textContent = questions.length;
+            totalQuestionsResults.textContent = questions.length;
+
+            function loadQuestion() {
+                quizActive = true;
+                selectedOption = null;
+                feedbackDisplay.classList.add('hidden');
+                nextButton.textContent = 'Далее';
+                nextButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                nextButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+
+                const questionData = questions[currentQuestionIndex];
+                questionText.textContent = questionData.question;
+                optionsContainer.innerHTML = '';
+                currentQuestionNumber.textContent = currentQuestionIndex + 1;
+
+                questionData.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add(
+                        'option-button',
+                        'w-full', 'py-3', 'px-4', 'rounded-md', 'text-left', 'border', 'border-slate-300',
+                        'hover:bg-slate-100', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500'
+                    );
+                    button.dataset.option = option;
+                    button.addEventListener('click', () => selectOption(button));
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            function selectOption(button) {
+                if (!quizActive) return;
+
+                // Remove previous selection highlighting
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.classList.remove('correct', 'incorrect', 'border-blue-500');
+                    btn.classList.add('border-slate-300');
+                });
+
+                selectedOption = button.dataset.option;
+                button.classList.add('border-blue-500'); // Highlight selected option
+
+                checkAnswer();
+                quizActive = false; // Disable further clicks on options for this question
+            }
+
+            function checkAnswer() {
+                const questionData = questions[currentQuestionIndex];
+                const allOptionButtons = document.querySelectorAll('.option-button');
+
+                allOptionButtons.forEach(button => {
+                    button.classList.add('disabled'); // Disable all buttons after selection
+                    if (button.dataset.option === questionData.correctAnswer) {
+                        button.classList.add('correct');
+                    }
+                });
+
+                if (selectedOption === questionData.correctAnswer) {
+                    score++;
+                    feedbackDisplay.textContent = 'Верно! 🎉';
+                    feedbackDisplay.classList.remove('text-red-600');
+                    feedbackDisplay.classList.add('text-green-600');
+                } else {
+                    const incorrectButton = document.querySelector(`.option-button[data-option="${selectedOption}"]`);
+                    if (incorrectButton) {
+                        incorrectButton.classList.add('incorrect');
+                    }
+                    feedbackDisplay.textContent = `Неверно. Правильный ответ: ${questionData.correctAnswer}`;
+                    feedbackDisplay.classList.remove('text-green-600');
+                    feedbackDisplay.classList.add('text-red-600');
+                }
+                feedbackDisplay.classList.remove('hidden');
+            }
+
+            function showResults() {
+                quizContainer.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+                scoreDisplay.textContent = score;
+            }
+
+            nextButton.addEventListener('click', () => {
+                if (selectedOption === null && quizActive) {
+                    feedbackDisplay.textContent = 'Пожалуйста, выберите ответ.';
+                    feedbackDisplay.classList.remove('hidden', 'text-green-600');
+                    feedbackDisplay.classList.add('text-red-600');
                     return;
                 }
 
-                loadingIndicator.classList.remove('hidden');
-                outputArea.innerHTML = ''; // Clear previous output
-
-                let chatHistory = [];
-                const prompt = `Я хочу сгенерировать задачи для Индивидуального Плана Развития. Моя цель развития: ${userGoal}. Пожалуйста, предложи 5-7 конкретных, измеримых, достижимых, релевантных и ограниченных по времени (SMART) задач, которые помогут мне достичь этой цели. Ответ предоставь в формате JSON-массива строк, где каждая строка - это одна задача. Пример: ["Пройти курс по основам публичных выступлений", "Подготовить и провести 3 презентации для команды в течение месяца", ...]`;
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-
-                const payload = {
-                    contents: chatHistory,
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "ARRAY",
-                            items: {
-                                type: "STRING"
-                            }
-                        }
-                    }
-                };
-
-                const apiKey = ""; // If you want to use models other than gemini-2.5-flash-preview-05-20 or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                let retries = 0;
-                const maxRetries = 5;
-                const baseDelay = 1000; // 1 second
-
-                while (retries < maxRetries) {
-                    try {
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        if (!response.ok) {
-                            if (response.status === 429) { // Too Many Requests
-                                const delay = baseDelay * Math.pow(2, retries);
-                                retries++;
-                                await new Promise(resolve => setTimeout(resolve, delay));
-                                continue; // Retry the request
-                            } else {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                        }
-
-                        const result = await response.json();
-                        
-                        if (result.candidates && result.candidates.length > 0 &&
-                            result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0) {
-                            const json = result.candidates[0].content.parts[0].text;
-                            const parsedJson = JSON.parse(json);
-                            
-                            if (Array.isArray(parsedJson) && parsedJson.length > 0) {
-                                let tasksHtml = '<ul class="list-disc pl-5 space-y-2">';
-                                parsedJson.forEach(task => {
-                                    tasksHtml += `<li>${task}</li>`;
-                                });
-                                tasksHtml += '</ul>';
-                                outputArea.innerHTML = tasksHtml;
-                            } else {
-                                outputArea.innerHTML = '<p class="text-slate-500">Не удалось сгенерировать задачи. Попробуйте сформулировать цель по-другому.</p>';
-                            }
-                        } else {
-                            outputArea.innerHTML = '<p class="text-slate-500">Не удалось получить корректный ответ от API.</p>';
-                        }
-                        break; // Exit loop on success
-
-                    } catch (error) {
-                        console.error("Ошибка при вызове Gemini API:", error);
-                        outputArea.innerHTML = `<p class="text-red-500">Произошла ошибка: ${error.message}. Попробуйте еще раз.</p>`;
-                        break; // Exit loop on non-retryable error
-                    } finally {
-                        loadingIndicator.classList.add('hidden');
-                    }
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
                 }
+            });
+
+            restartButton.addEventListener('click', () => {
+                currentQuestionIndex = 0;
+                score = 0;
+                quizContainer.classList.remove('hidden');
+                resultsContainer.classList.add('hidden');
+                loadQuestion();
+            });
+
+            loadQuestion(); // Initial load of quiz
+
+            // --- Navigation Logic ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+            const mobileMenuSidebar = document.getElementById('mobile-menu-sidebar');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenuSidebar.classList.add('open');
+                mobileMenuOverlay.classList.add('open');
+            });
+
+            closeMobileMenuButton.addEventListener('click', () => {
+                mobileMenuSidebar.classList.remove('open');
+                mobileMenuOverlay.classList.remove('open');
+            });
+
+            mobileMenuOverlay.addEventListener('click', () => {
+                mobileMenuSidebar.classList.remove('open');
+                mobileMenuOverlay.classList.remove('open');
+            });
+
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuSidebar.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('open');
+                });
             });
         });
     </script>
