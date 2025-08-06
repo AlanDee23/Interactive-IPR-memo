@@ -6,8 +6,8 @@
     <title>Интерактивная памятка по ИПР</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure is based on four distinct thematic cards that correspond to the original memo's sections: 'When to Use', 'System Features', 'Responsibilities', and 'Common Mistakes'. This card-based design was chosen for its clarity and modern feel, allowing users to easily digest information in chunks. Key interactions include a role-selector for responsibilities and a clickable accordion for common mistakes. This enhances user engagement by transforming passive reading into active exploration, which is more effective for a short instructional guide. -->
-    <!-- Visualization & Content Choices: 1. 'When to Use' & 'Features': Goal: Inform. Method: Styled lists with Unicode icons. Justification: Clear and scannable presentation for straightforward information. 2. 'Responsibilities': Goal: Organize & Compare. Method: Interactive role selector (3 buttons updating a text area). Interaction: User clicks a role button to see specific duties. Justification: Allows users to filter information based on their immediate interest, making it easier to compare roles than a static list. Implemented with vanilla JS. 3. 'Common Mistakes': Goal: Engage & Inform. Method: Accordion/clickable list. Interaction: User clicks on a mistake to reveal its explanation. Justification: Reduces initial information overload and encourages active discovery of each point. Implemented with vanilla JS. -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure is based on four distinct thematic cards that correspond to the original memo's sections: 'When to Use', 'System Features', 'Responsibilities', and 'Common Mistakes'. A new section, 'IDP Task Generator', has been added to leverage LLM capabilities. This card-based design was chosen for its clarity and modern feel, allowing users to easily digest information in chunks. Key interactions include a role-selector for responsibilities, a clickable accordion for common mistakes, and a text input with a button for the LLM-powered task generator. This enhances user engagement by transforming passive reading into active exploration and creation, which is more effective for an instructional guide. -->
+    <!-- Visualization & Content Choices: 1. 'When to Use' & 'Features': Goal: Inform. Method: Styled lists with Unicode icons. Justification: Clear and scannable presentation for straightforward information. 2. 'Responsibilities': Goal: Organize & Compare. Method: Interactive role selector (3 buttons updating a text area). Interaction: User clicks a role button to see specific duties. Justification: Allows users to filter information based on their immediate interest, making it easier to compare roles than a static list. Implemented with vanilla JS. 3. 'Common Mistakes': Goal: Engage & Inform. Method: Accordion/clickable list. Interaction: User clicks on a mistake to reveal its explanation. Justification: Reduces initial information overload and encourages active discovery of each point. Implemented with vanilla JS. 4. 'IDP Task Generator': Goal: Create & Assist. Method: Text input, button, and dynamic text output. Interaction: User inputs a goal, clicks a button, and receives LLM-generated tasks. Justification: Directly helps users apply the memo's principles by generating actionable content for their IDPs, enhancing the app's utility. Implemented with vanilla JS and Gemini API. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -126,6 +126,22 @@
                     </div>
                 </div>
             </section>
+
+            <section id="task-generator" class="card p-6">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">✨</span>Генератор задач для ИПР</h2>
+                <p class="mb-5 text-slate-600">Опишите вашу цель развития, и мы сгенерируем список конкретных задач для вашего Индивидуального Плана Развития.</p>
+                <textarea id="goal-input" class="w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" rows="3" placeholder="Например: Улучшить навыки публичных выступлений"></textarea>
+                <button id="generate-tasks-button" class="bg-blue-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-blue-700 transition w-full sm:w-auto">
+                    Сгенерировать задачи ✨
+                </button>
+                <div id="loading-indicator" class="mt-4 text-center text-slate-500 hidden">
+                    Генерирую задачи...
+                </div>
+                <div id="generated-tasks-output" class="mt-5 p-4 bg-slate-50 rounded-lg border border-slate-200 min-h-[100px]">
+                    <p class="text-slate-500">Здесь появятся сгенерированные задачи.</p>
+                </div>
+            </section>
+
         </main>
 
         <footer class="text-center mt-12 py-4 border-t border-slate-200">
@@ -180,6 +196,98 @@
             if(roleButtons.length > 0) {
                 roleButtons[0].click();
             }
+
+            // LLM Integration for Task Generator
+            const goalInput = document.getElementById('goal-input');
+            const generateButton = document.getElementById('generate-tasks-button');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const outputArea = document.getElementById('generated-tasks-output');
+
+            generateButton.addEventListener('click', async () => {
+                const userGoal = goalInput.value.trim();
+                if (!userGoal) {
+                    outputArea.innerHTML = '<p class="text-red-500">Пожалуйста, введите цель развития.</p>';
+                    return;
+                }
+
+                loadingIndicator.classList.remove('hidden');
+                outputArea.innerHTML = ''; // Clear previous output
+
+                let chatHistory = [];
+                const prompt = `Я хочу сгенерировать задачи для Индивидуального Плана Развития. Моя цель развития: ${userGoal}. Пожалуйста, предложи 5-7 конкретных, измеримых, достижимых, релевантных и ограниченных по времени (SMART) задач, которые помогут мне достичь этой цели. Ответ предоставь в формате JSON-массива строк, где каждая строка - это одна задача. Пример: ["Пройти курс по основам публичных выступлений", "Подготовить и провести 3 презентации для команды в течение месяца", ...]`;
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = {
+                    contents: chatHistory,
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "ARRAY",
+                            items: {
+                                type: "STRING"
+                            }
+                        }
+                    }
+                };
+
+                const apiKey = ""; // If you want to use models other than gemini-2.5-flash-preview-05-20 or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                let retries = 0;
+                const maxRetries = 5;
+                const baseDelay = 1000; // 1 second
+
+                while (retries < maxRetries) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 429) { // Too Many Requests
+                                const delay = baseDelay * Math.pow(2, retries);
+                                retries++;
+                                await new Promise(resolve => setTimeout(resolve, delay));
+                                continue; // Retry the request
+                            } else {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                        }
+
+                        const result = await response.json();
+                        
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const json = result.candidates[0].content.parts[0].text;
+                            const parsedJson = JSON.parse(json);
+                            
+                            if (Array.isArray(parsedJson) && parsedJson.length > 0) {
+                                let tasksHtml = '<ul class="list-disc pl-5 space-y-2">';
+                                parsedJson.forEach(task => {
+                                    tasksHtml += `<li>${task}</li>`;
+                                });
+                                tasksHtml += '</ul>';
+                                outputArea.innerHTML = tasksHtml;
+                            } else {
+                                outputArea.innerHTML = '<p class="text-slate-500">Не удалось сгенерировать задачи. Попробуйте сформулировать цель по-другому.</p>';
+                            }
+                        } else {
+                            outputArea.innerHTML = '<p class="text-slate-500">Не удалось получить корректный ответ от API.</p>';
+                        }
+                        break; // Exit loop on success
+
+                    } catch (error) {
+                        console.error("Ошибка при вызове Gemini API:", error);
+                        outputArea.innerHTML = `<p class="text-red-500">Произошла ошибка: ${error.message}. Попробуйте еще раз.</p>`;
+                        break; // Exit loop on non-retryable error
+                    } finally {
+                        loadingIndicator.classList.add('hidden');
+                    }
+                }
+            });
         });
     </script>
 
