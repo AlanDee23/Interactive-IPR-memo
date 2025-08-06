@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная памятка по ИПР</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure is based on four distinct thematic cards that correspond to the original memo's sections: 'When to Use', 'System Features', 'Responsibilities', and 'Common Mistakes'. This card-based design was chosen for its clarity and modern feel, allowing users to easily digest information in chunks. Key interactions include a role-selector for responsibilities and a clickable accordion for common mistakes. This enhances user engagement by transforming passive reading into active exploration, which is more effective for a short instructional guide. -->
+    <!-- Visualization & Content Choices: 1. 'When to Use' & 'Features': Goal: Inform. Method: Styled lists with Unicode icons. Justification: Clear and scannable presentation for straightforward information. 2. 'Responsibilities': Goal: Organize & Compare. Method: Interactive role selector (3 buttons updating a text area). Interaction: User clicks a role button to see specific duties. Justification: Allows users to filter information based on their immediate interest, making it easier to compare roles than a static list. Implemented with vanilla JS. 3. 'Common Mistakes': Goal: Engage & Inform. Method: Accordion/clickable list. Interaction: User clicks on a mistake to reveal its explanation. Justification: Reduces initial information overload and encourages active discovery of each point. Implemented with vanilla JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .tab-button.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        .mistake-item .mistake-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .mistake-item.open .mistake-answer {
+            max-height: 100px; 
+        }
+        .mistake-item .icon {
+            transition: transform 0.3s ease-out;
+        }
+        .mistake-item.open .icon {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl">
+
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Интерактивная памятка по ИПР</h1>
+            <p class="mt-2 text-lg text-slate-600">Ваш гид по Индивидуальным Планам Развития</p>
+        </header>
+
+        <main class="space-y-8">
+            
+            <section id="when-to-use" class="card p-6">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">🎯</span>Когда использовать ИПР</h2>
+                <p class="mb-5 text-slate-600">Индивидуальные планы развития являются ключевым инструментом в следующих ситуациях, помогая структурировать рост и адаптацию сотрудников.</p>
+                <ul class="space-y-3 list-inside">
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Адаптация новых сотрудников:</strong> Успешное прохождение испытательного срока.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Развитие компетенций:</strong> Повышение квалификации действующих сотрудников.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Карьерный рост:</strong> Подготовка к повышению, смене роли или переводу.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Кадровый резерв:</strong> Формирование пула талантов для будущих позиций.</span></li>
+                </ul>
+            </section>
+
+            <section id="features" class="card p-6">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">🛠️</span>Что можно делать в iSpring Learn</h2>
+                 <p class="mb-5 text-slate-600">Платформа предоставляет полный набор инструментов для создания и управления планами развития. Ниже перечислены основные возможности.</p>
+                <ul class="space-y-3 list-inside">
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Создавать планы с нуля или использовать готовые шаблоны.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Делить план на этапы и задачи с конкретными дедлайнами.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Назначать наставника и куратора на каждую задачу для контроля.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Отслеживать прогресс выполнения плана в реальном времени через дашборд.</span></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Выносить итоговое решение по результатам (зачёт / незачёт).</span></li>
+                </ul>
+            </section>
+            
+            <section id="roles" class="card p-6">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">👥</span>Кто за что отвечает</h2>
+                <p class="mb-5 text-slate-600">Процесс ИПР включает трёх ключевых участников. Выберите роль, чтобы увидеть список обязанностей и понять зону ответственности каждого.</p>
+                <div class="flex flex-wrap gap-2 mb-5">
+                    <button data-role="employee" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Сотрудник</button>
+                    <button data-role="mentor" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Наставник</button>
+                    <button data-role="manager" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Руководитель</button>
+                </div>
+                <div id="role-description" class="p-4 bg-slate-50 rounded-lg min-h-[100px] transition">
+                    <p class="text-slate-500">Выберите роль, чтобы увидеть описание.</p>
+                </div>
+            </section>
+
+            <section id="mistakes" class="card p-6">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">⚠️</span>Частые ошибки</h2>
+                <p class="mb-5 text-slate-600">Знание типичных ошибок поможет избежать их и сделать процесс ИПР максимально эффективным. Нажмите на ошибку, чтобы узнать подробности.</p>
+                <div class="space-y-3">
+                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer">
+                        <div class="flex justify-between items-center font-semibold text-lg">
+                            <span>Не опубликован шаблон</span>
+                            <span class="icon text-blue-500 text-2xl font-light">+</span>
+                        </div>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Его не будет видно в общем списке доступных шаблонов, и сотрудники не смогут его использовать.</p>
+                    </div>
+                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer">
+                        <div class="flex justify-between items-center font-semibold text-lg">
+                            <span>В задачах нет конкретного действия</span>
+                            <span class="icon text-blue-500 text-2xl font-light">+</span>
+                        </div>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Неясные формулировки, как «ознакомиться», не позволяют оценить результат. Задача должна быть измеримой.</p>
+                    </div>
+                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer">
+                        <div class="flex justify-between items-center font-semibold text-lg">
+                            <span>Не назначен наставник/куратор</span>
+                            <span class="icon text-blue-500 text-2xl font-light">+</span>
+                        </div>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Задачи остаются без контроля, обратная связь отсутствует, и сотрудник может сбиться с пути.</p>
+                    </div>
+                    <div class="mistake-item pb-2 cursor-pointer">
+                        <div class="flex justify-between items-center font-semibold text-lg">
+                            <span>Не заданы сроки</span>
+                            <span class="icon text-blue-500 text-2xl font-light">+</span>
+                        </div>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Без дедлайнов невозможно отследить просрочку и управлять временем выполнения плана.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 py-4 border-t border-slate-200">
+            <p class="text-sm text-slate-500">&copy; 2025 Интерактивная памятка. Все права защищены.</p>
+            <p class="text-sm text-slate-500 mt-1">Разработал Антон Павлов, тренинг-менеджер команды Центра Хмельницкого Образования.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const rolesData = {
+                employee: {
+                    title: 'Сотрудник',
+                    description: 'Основной исполнитель плана. Его главная задача — своевременно и качественно выполнять поставленные цели, запрашивать обратную связь и сообщать о трудностях.'
+                },
+                mentor: {
+                    title: 'Наставник',
+                    description: 'Проверяет и принимает выполненные задачи. Даёт конструктивные комментарии, делится опытом и может вернуть задачу на доработку при необходимости.'
+                },
+                manager: {
+                    title: 'Руководитель',
+                    description: 'Утверждает итоговый результат всего плана. Контролирует общие сроки и статусы, обеспечивает наличие необходимых ресурсов и решает спорные вопросы.'
+                }
+            };
+
+            const roleButtons = document.querySelectorAll('.tab-button');
+            const roleDescriptionContainer = document.getElementById('role-description');
+            
+            roleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const role = button.dataset.role;
+                    
+                    roleButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const data = rolesData[role];
+                    roleDescriptionContainer.innerHTML = `
+                        <h3 class="font-bold text-lg text-slate-900">${data.title}</h3>
+                        <p class="mt-1 text-slate-600">${data.description}</p>
+                    `;
+                });
+            });
+
+            const mistakeItems = document.querySelectorAll('.mistake-item');
+            mistakeItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    item.classList.toggle('open');
+                });
+            });
+            
+            if(roleButtons.length > 0) {
+                roleButtons[0].click();
+            }
+        });
+    </script>
+
+</body>
+</html>
