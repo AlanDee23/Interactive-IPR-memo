@@ -32,7 +32,7 @@
             transition: max-height 0.3s ease-out;
         }
         .mistake-item.open .mistake-answer {
-            max-height: 100px; 
+            max-height: 500px; /* Increased from 100px to allow for more content */
         }
         .mistake-item .icon {
             transition: transform 0.3s ease-out;
@@ -121,20 +121,12 @@
         </header>
 
         <!-- Navigation Bar -->
-        <nav class="bg-blue-600 p-4 rounded-lg mb-8 shadow-md nav-highlight">
-            <div class="flex justify-between items-center">
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex space-x-6">
-                    <a href="#when-to-use" class="text-white hover:text-blue-200 font-semibold transition">Когда использовать</a>
-                    <a href="#features" class="text-white hover:text-blue-200 font-semibold transition">Функции iSpring Learn</a>
-                    <a href="#roles" class="text-white hover:text-blue-200 font-semibold transition">Кто за что отвечает</a>
-                    <a href="#mistakes" class="text-white hover:text-blue-200 font-semibold transition">Частые ошибки</a>
-                    <a href="#quiz-section" class="text-white hover:text-blue-200 font-semibold transition">Тест</a>
-                </div>
-
-                <!-- Mobile Menu Button (Hamburger) -->
-                <div class="md:hidden flex-grow text-right">
-                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+        <nav class="bg-blue-600 p-4 rounded-lg mb-8 shadow-md nav-highlight" aria-label="Основная навигация">
+            <div class="flex justify-end items-center"> <!-- Changed to justify-end to align hamburger to the right -->
+                <!-- Mobile Menu Button (Hamburger) - Always visible now -->
+                <div class="flex-grow text-right"> <!-- Removed md:hidden -->
+                    <button id="mobile-menu-button" class="text-white focus:outline-none p-2 rounded-md flex items-center justify-end space-x-2" aria-label="Открыть мобильное меню">
+                        <span class="text-lg font-semibold">Меню</span> <!-- Added 'Меню' text -->
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                         </svg>
@@ -144,31 +136,31 @@
         </nav>
 
         <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+        <div id="mobile-menu-overlay" class="mobile-menu-overlay" aria-hidden="true"></div>
 
         <!-- Mobile Menu Sidebar -->
-        <div id="mobile-menu-sidebar" class="mobile-menu">
+        <div id="mobile-menu-sidebar" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Мобильное меню">
             <div class="p-6">
                 <div class="flex justify-end mb-4">
-                    <button id="close-mobile-menu" class="text-slate-600 hover:text-slate-900 focus:outline-none">
+                    <button id="close-mobile-menu" class="text-slate-600 hover:text-slate-900 focus:outline-none p-2 rounded-md" aria-label="Закрыть мобильное меню">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
                 <nav class="flex flex-col space-y-4">
-                    <a href="#when-to-use" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Когда использовать</a>
-                    <a href="#features" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Функции iSpring Learn</a>
-                    <a href="#roles" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Кто за что отвечает</a>
-                    <a href="#mistakes" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Частые ошибки</a>
-                    <a href="#quiz-section" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link">Тест</a>
+                    <a href="#when-to-use" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link rounded-md px-2 py-1" aria-label="Перейти к разделу Когда использовать">Когда использовать</a>
+                    <a href="#features" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link rounded-md px-2 py-1" aria-label="Перейти к разделу Функции iSpring Learn">Функции iSpring Learn</a>
+                    <a href="#roles" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link rounded-md px-2 py-1" aria-label="Перейти к разделу Кто за что отвечает">Кто за что отвечает</a>
+                    <a href="#mistakes" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link rounded-md px-2 py-1" aria-label="Перейти к разделу Частые ошибки">Частые ошибки</a>
+                    <a href="#quiz-section" class="text-slate-700 hover:text-blue-600 font-semibold text-lg transition mobile-nav-link rounded-md px-2 py-1" aria-label="Перейти к разделу Тест">Тест</a>
                 </nav>
             </div>
         </div>
 
         <main class="space-y-8">
             
-            <section id="when-to-use" class="card p-6">
+            <section id="when-to-use" class="card p-6 rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">🎯</span>Когда использовать ИПР</h2>
                 <p class="mb-5 text-slate-600">Индивидуальные планы развития являются ключевым инструментом в следующих ситуациях, помогая структурировать рост и адаптацию сотрудников.</p>
                 <ul class="space-y-3 list-inside">
@@ -179,9 +171,9 @@
                 </ul>
             </section>
 
-            <section id="features" class="card p-6">
+            <section id="features" class="card p-6 rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">🛠️</span>Что можно делать в iSpring Learn</h2>
-                 <p class="mb-5 text-slate-600">Платформа предоставляет полный набор инструментов для создания и управления планами развития. Ниже перечислены основные возможности.</p>
+                <p class="mb-5 text-slate-600">Платформа предоставляет полный набор инструментов для создания и управления планами развития. Ниже перечислены основные возможности.</p>
                 <ul class="space-y-3 list-inside">
                     <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Создавать планы с нуля или использовать готовые шаблоны.</span></li>
                     <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span>Делить план на этапы и задачи с конкретными дедлайнами.</span></li>
@@ -191,70 +183,70 @@
                 </ul>
             </section>
             
-            <section id="roles" class="card p-6">
+            <section id="roles" class="card p-6 rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">👥</span>Кто за что отвечает</h2>
                 <p class="mb-5 text-slate-600">Процесс ИПР включает трёх ключевых участников. Выберите роль, чтобы увидеть список обязанностей и понять зону ответственности каждого.</p>
-                <div class="flex flex-wrap gap-2 mb-5">
-                    <button data-role="employee" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Сотрудник</button>
-                    <button data-role="mentor" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Наставник</button>
-                    <button data-role="manager" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Руководитель</button>
+                <div class="flex flex-wrap gap-2 mb-5" role="tablist">
+                    <button data-role="employee" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition" role="tab" id="tab-employee" aria-controls="panel-employee" aria-selected="false">Сотрудник</button>
+                    <button data-role="mentor" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition" role="tab" id="tab-mentor" aria-controls="panel-mentor" aria-selected="false">Наставник</button>
+                    <button data-role="manager" class="tab-button flex-grow sm:flex-grow-0 py-2 px-4 rounded-md font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition" role="tab" id="tab-manager" aria-controls="panel-manager" aria-selected="false">Руководитель</button>
                 </div>
-                <div id="role-description" class="p-4 bg-slate-50 rounded-lg min-h-[100px] transition">
+                <div id="role-description" class="p-4 bg-slate-50 rounded-lg min-h-[100px] transition" role="tabpanel" aria-labelledby="tab-employee">
                     <p class="text-slate-500">Выберите роль, чтобы увидеть описание.</p>
                 </div>
             </section>
 
-            <section id="mistakes" class="card p-6">
+            <section id="mistakes" class="card p-6 rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">⚠️</span>Частые ошибки</h2>
                 <p class="mb-5 text-slate-600">Знание типичных ошибок поможет избежать их и сделать процесс ИПР максимально эффективным. Нажмите на ошибку, чтобы узнать подробности.</p>
                 <div class="space-y-3">
-                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer">
+                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer rounded-md p-2" role="button" aria-expanded="false" aria-controls="mistake-answer-1" tabindex="0">
                         <div class="flex justify-between items-center font-semibold text-lg">
                             <span>Не опубликован шаблон</span>
                             <span class="icon text-blue-500 text-2xl font-light">+</span>
                         </div>
-                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Его не будет видно в общем списке доступных шаблонов, и сотрудники не смогут его использовать.</p>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4" id="mistake-answer-1">Его не будет видно в общем списке доступных шаблонов, и сотрудники не смогут его использовать.</p>
                     </div>
-                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer">
+                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer rounded-md p-2" role="button" aria-expanded="false" aria-controls="mistake-answer-2" tabindex="0">
                         <div class="flex justify-between items-center font-semibold text-lg">
                             <span>В задачах нет конкретного действия</span>
                             <span class="icon text-blue-500 text-2xl font-light">+</span>
                         </div>
-                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Неясные формулировки, как «ознакомиться», не позволяют оценить результат. Задача должна быть измеримой.</p>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4" id="mistake-answer-2">Неясные формулировки, как «ознакомиться», не позволяют оценить результат. Задача должна быть измеримой.</p>
                     </div>
-                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer">
+                    <div class="mistake-item border-b border-slate-200 pb-2 cursor-pointer rounded-md p-2" role="button" aria-expanded="false" aria-controls="mistake-answer-3" tabindex="0">
                         <div class="flex justify-between items-center font-semibold text-lg">
                             <span>Не назначен наставник/куратор</span>
                             <span class="icon text-blue-500 text-2xl font-light">+</span>
                         </div>
-                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Задачи остаются без контроля, обратная связь отсутствует, и сотрудник может сбиться с пути.</p>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4" id="mistake-answer-3">Задачи остаются без контроля, обратная связь отсутствует, и сотрудник может сбиться с пути.</p>
                     </div>
-                    <div class="mistake-item pb-2 cursor-pointer">
+                    <div class="mistake-item pb-2 cursor-pointer rounded-md p-2" role="button" aria-expanded="false" aria-controls="mistake-answer-4" tabindex="0">
                         <div class="flex justify-between items-center font-semibold text-lg">
                             <span>Не заданы сроки</span>
                             <span class="icon text-blue-500 text-2xl font-light">+</span>
                         </div>
-                        <p class="mistake-answer mt-2 text-slate-600 pl-4">Без дедлайнов невозможно отследить просрочку и управлять временем выполнения плана.</p>
+                        <p class="mistake-answer mt-2 text-slate-600 pl-4" id="mistake-answer-4">Без дедлайнов невозможно отследить просрочку и управлять временем выполнения плана.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="quiz-section" class="card p-6">
+            <section id="quiz-section" class="card p-6 rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4 flex items-center"><span class="text-2xl mr-3">🧠</span>Тест для самопроверки</h2>
                 <p class="mb-5 text-slate-600">Проверьте свои знания по Индивидуальным Планам Развития, ответив на несколько вопросов.</p>
                 
                 <div id="quiz-container">
                     <div id="question-display" class="mb-6">
-                        <p class="text-xl font-semibold text-slate-800 mb-4" id="question-text"></p>
-                        <div id="options-container" class="space-y-3">
+                        <p class="text-xl font-semibold text-slate-800 mb-4" id="question-text" aria-live="polite"></p>
+                        <div id="options-container" class="space-y-3" role="radiogroup" aria-labelledby="question-text">
                             <!-- Options will be loaded here by JavaScript -->
                         </div>
                     </div>
 
-                    <div id="feedback-display" class="text-center text-lg font-medium mb-6 hidden"></div>
+                    <div id="feedback-display" class="text-center text-lg font-medium mb-6 hidden" aria-live="assertive"></div>
 
                     <div class="flex justify-between items-center mt-6">
-                        <button id="next-button" class="bg-blue-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-blue-700 transition">
+                        <button id="next-button" class="bg-blue-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-blue-700 transition" aria-label="Следующий вопрос">
                             Далее
                         </button>
                         <p class="text-slate-600">Вопрос <span id="current-question-number">1</span> из <span id="total-questions"></span></p>
@@ -264,7 +256,7 @@
                 <div id="results-container" class="text-center hidden">
                     <h2 class="text-2xl font-bold text-slate-900 mb-4">Результаты теста</h2>
                     <p class="text-xl text-slate-700 mb-6">Вы ответили правильно на <span id="score">0</span> из <span id="total-questions-results"></span> вопросов.</p>
-                    <button id="restart-button" class="bg-green-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-green-700 transition">
+                    <button id="restart-button" class="bg-green-600 text-white py-2 px-6 rounded-md font-semibold hover:bg-green-700 transition" aria-label="Начать тест заново">
                         Начать заново
                     </button>
                 </div>
@@ -282,6 +274,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- Memo Logic ---
+            // Data for different roles and their responsibilities
             const rolesData = {
                 employee: {
                     title: 'Сотрудник',
@@ -300,30 +293,51 @@
             const roleButtons = document.querySelectorAll('.tab-button');
             const roleDescriptionContainer = document.getElementById('role-description');
             
+            // Event listener for role tab buttons
             roleButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const role = button.dataset.role;
                     
-                    roleButtons.forEach(btn => btn.classList.remove('active'));
+                    // Remove 'active' class and reset aria-selected for all buttons
+                    roleButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    // Add 'active' class and set aria-selected for the clicked button
                     button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
                     
+                    // Update role description content
                     const data = rolesData[role];
                     roleDescriptionContainer.innerHTML = `
                         <h3 class="font-bold text-lg text-slate-900">${data.title}</h3>
                         <p class="mt-1 text-slate-600">${data.description}</p>
                     `;
+                    // Update aria-labelledby for the tab panel
+                    roleDescriptionContainer.setAttribute('aria-labelledby', `tab-${role}`);
                 });
             });
 
+            // Logic for expanding/collapsing mistake items (accordions)
             const mistakeItems = document.querySelectorAll('.mistake-item');
             mistakeItems.forEach(item => {
                 item.addEventListener('click', () => {
-                    item.classList.toggle('open');
+                    const isOpen = item.classList.toggle('open');
+                    item.setAttribute('aria-expanded', isOpen); // Update aria-expanded attribute
+                });
+                // Also handle keyboard interaction for accessibility
+                item.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); // Prevent default spacebar action (scrolling)
+                        const isOpen = item.classList.toggle('open');
+                        item.setAttribute('aria-expanded', isOpen);
+                    }
                 });
             });
             
+            // Initialize the first role tab as active on page load
             if(roleButtons.length > 0) {
-                roleButtons[0].click(); // Initialize role description
+                roleButtons[0].click(); 
             }
 
             // --- Quiz Logic ---
@@ -373,8 +387,9 @@
             let currentQuestionIndex = 0;
             let score = 0;
             let selectedOption = null;
-            let quizActive = true;
+            let quizActive = true; // Controls if options can be clicked for current question
 
+            // Get DOM elements for the quiz
             const questionText = document.getElementById('question-text');
             const optionsContainer = document.getElementById('options-container');
             const feedbackDisplay = document.getElementById('feedback-display');
@@ -387,22 +402,25 @@
             const scoreDisplay = document.getElementById('score');
             const restartButton = document.getElementById('restart-button');
 
+            // Set total number of questions
             totalQuestions.textContent = questions.length;
             totalQuestionsResults.textContent = questions.length;
 
+            // Function to load and display a question
             function loadQuestion() {
-                quizActive = true;
-                selectedOption = null;
-                feedbackDisplay.classList.add('hidden');
-                nextButton.textContent = 'Далее';
-                nextButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                quizActive = true; // Re-enable option selection for new question
+                selectedOption = null; // Reset selected option
+                feedbackDisplay.classList.add('hidden'); // Hide feedback
+                nextButton.textContent = 'Далее'; // Reset button text
+                nextButton.classList.remove('bg-gray-400', 'cursor-not-allowed'); // Ensure button is active
                 nextButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
 
                 const questionData = questions[currentQuestionIndex];
                 questionText.textContent = questionData.question;
-                optionsContainer.innerHTML = '';
-                currentQuestionNumber.textContent = currentQuestionIndex + 1;
+                optionsContainer.innerHTML = ''; // Clear previous options
+                currentQuestionNumber.textContent = currentQuestionIndex + 1; // Update question number
 
+                // Create buttons for each option
                 questionData.options.forEach((option, index) => {
                     const button = document.createElement('button');
                     button.textContent = option;
@@ -411,39 +429,48 @@
                         'w-full', 'py-3', 'px-4', 'rounded-md', 'text-left', 'border', 'border-slate-300',
                         'hover:bg-slate-100', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500'
                     );
-                    button.dataset.option = option;
+                    button.dataset.option = option; // Store option text in dataset
+                    button.setAttribute('role', 'radio'); // ARIA role for radio button
+                    button.setAttribute('aria-checked', 'false'); // Initial ARIA state
+                    button.setAttribute('tabindex', '0'); // Make buttons focusable
                     button.addEventListener('click', () => selectOption(button));
                     optionsContainer.appendChild(button);
                 });
             }
 
+            // Function to handle option selection
             function selectOption(button) {
-                if (!quizActive) return;
+                if (!quizActive) return; // Prevent multiple selections for the same question
 
-                // Remove previous selection highlighting
+                // Remove previous selection highlighting and ARIA state
                 document.querySelectorAll('.option-button').forEach(btn => {
                     btn.classList.remove('correct', 'incorrect', 'border-blue-500');
                     btn.classList.add('border-slate-300');
+                    btn.setAttribute('aria-checked', 'false');
                 });
 
                 selectedOption = button.dataset.option;
                 button.classList.add('border-blue-500'); // Highlight selected option
+                button.setAttribute('aria-checked', 'true'); // Set ARIA state for selected option
 
-                checkAnswer();
+                checkAnswer(); // Check the answer immediately after selection
                 quizActive = false; // Disable further clicks on options for this question
             }
 
+            // Function to check the selected answer
             function checkAnswer() {
                 const questionData = questions[currentQuestionIndex];
                 const allOptionButtons = document.querySelectorAll('.option-button');
 
+                // Disable all option buttons and show correct/incorrect styling
                 allOptionButtons.forEach(button => {
-                    button.classList.add('disabled'); // Disable all buttons after selection
+                    button.classList.add('disabled'); // Visually disable clicks
                     if (button.dataset.option === questionData.correctAnswer) {
-                        button.classList.add('correct');
+                        button.classList.add('correct'); // Highlight correct answer
                     }
                 });
 
+                // Provide feedback based on selection
                 if (selectedOption === questionData.correctAnswer) {
                     score++;
                     feedbackDisplay.textContent = 'Верно! 🎉';
@@ -452,22 +479,25 @@
                 } else {
                     const incorrectButton = document.querySelector(`.option-button[data-option="${selectedOption}"]`);
                     if (incorrectButton) {
-                        incorrectButton.classList.add('incorrect');
+                        incorrectButton.classList.add('incorrect'); // Highlight incorrect selection
                     }
                     feedbackDisplay.textContent = `Неверно. Правильный ответ: ${questionData.correctAnswer}`;
                     feedbackDisplay.classList.remove('text-green-600');
                     feedbackDisplay.classList.add('text-red-600');
                 }
-                feedbackDisplay.classList.remove('hidden');
+                feedbackDisplay.classList.remove('hidden'); // Show feedback message
             }
 
+            // Function to display quiz results
             function showResults() {
-                quizContainer.classList.add('hidden');
-                resultsContainer.classList.remove('hidden');
-                scoreDisplay.textContent = score;
+                quizContainer.classList.add('hidden'); // Hide quiz questions
+                resultsContainer.classList.remove('hidden'); // Show results container
+                scoreDisplay.textContent = score; // Display final score
             }
 
+            // Event listener for the "Next" button
             nextButton.addEventListener('click', () => {
+                // If no option is selected and quiz is active, prompt user to select
                 if (selectedOption === null && quizActive) {
                     feedbackDisplay.textContent = 'Пожалуйста, выберите ответ.';
                     feedbackDisplay.classList.remove('hidden', 'text-green-600');
@@ -475,50 +505,63 @@
                     return;
                 }
 
-                currentQuestionIndex++;
+                currentQuestionIndex++; // Move to the next question
                 if (currentQuestionIndex < questions.length) {
-                    loadQuestion();
+                    loadQuestion(); // Load the next question
                 } else {
-                    showResults();
+                    showResults(); // If all questions answered, show results
                 }
             });
 
+            // Event listener for the "Restart" button
             restartButton.addEventListener('click', () => {
-                currentQuestionIndex = 0;
-                score = 0;
-                quizContainer.classList.remove('hidden');
-                resultsContainer.classList.add('hidden');
-                loadQuestion();
+                currentQuestionIndex = 0; // Reset question index
+                score = 0; // Reset score
+                quizContainer.classList.remove('hidden'); // Show quiz container
+                resultsContainer.classList.add('hidden'); // Hide results container
+                loadQuestion(); // Start quiz from the beginning
             });
 
-            loadQuestion(); // Initial load of quiz
+            loadQuestion(); // Initial load of the first quiz question
 
-            // --- Navigation Logic ---
+            // --- Navigation Logic (Mobile Menu) ---
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const closeMobileMenuButton = document.getElementById('close-mobile-menu');
             const mobileMenuSidebar = document.getElementById('mobile-menu-sidebar');
             const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
             const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
+            // Open mobile menu
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenuSidebar.classList.add('open');
                 mobileMenuOverlay.classList.add('open');
+                mobileMenuSidebar.setAttribute('aria-hidden', 'false');
+                mobileMenuOverlay.setAttribute('aria-hidden', 'false');
             });
 
+            // Close mobile menu
             closeMobileMenuButton.addEventListener('click', () => {
                 mobileMenuSidebar.classList.remove('open');
                 mobileMenuOverlay.classList.remove('open');
+                mobileMenuSidebar.setAttribute('aria-hidden', 'true');
+                mobileMenuOverlay.setAttribute('aria-hidden', 'true');
             });
 
+            // Close mobile menu when clicking outside (overlay)
             mobileMenuOverlay.addEventListener('click', () => {
                 mobileMenuSidebar.classList.remove('open');
                 mobileMenuOverlay.classList.remove('open');
+                mobileMenuSidebar.setAttribute('aria-hidden', 'true');
+                mobileMenuOverlay.setAttribute('aria-hidden', 'true');
             });
 
+            // Close mobile menu when a navigation link is clicked
             mobileNavLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenuSidebar.classList.remove('open');
                     mobileMenuOverlay.classList.remove('open');
+                    mobileMenuSidebar.setAttribute('aria-hidden', 'true');
+                    mobileMenuOverlay.setAttribute('aria-hidden', 'true');
                 });
             });
         });
